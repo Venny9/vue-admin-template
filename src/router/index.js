@@ -71,12 +71,15 @@ export const constantRoutes = [
       }
     ]
   },
-
   {
     path: '/results',
-    name: '项目评估',
-    component: () => import('@/views/result/index.vue'),
-    meta: { title: '项目评估', icon: 'tree' }
+    component: Layout,
+    children: [{
+      path: 'index',
+      component: () => import('@/views/result/index'),
+      name: '项目评估',
+      meta: { title: '项目评估', icon: 'tree' }
+    }]
   },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

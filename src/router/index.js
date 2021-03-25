@@ -72,13 +72,22 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/results',
+    path: '/result',
     component: Layout,
+    redirect: '/result/list',
+    name: '项目评估',
+    meta: { title: '项目评估', icon: 'tree' },
     children: [{
-      path: 'index',
-      component: () => import('@/views/result/index'),
-      name: '项目评估',
-      meta: { title: '项目评估', icon: 'tree' }
+      path: 'list',
+      name: '评估列表',
+      component: () => import('@/views/result/list/index'),
+      meta: { title: '评估列表', icon: 'table' }
+    }, {
+      path: 'show',
+      name: '评估结果',
+      hidden: true,
+      component: () => import('@/views/result/show/index'),
+      meta: { title: '项目列表', icon: 'table' }
     }]
   },
   // 404 page must be placed at the end !!!

@@ -1,19 +1,26 @@
 <template>
   <div class="app-container">
-    <div>name</div>
+    <div>id:{{ id }}</div>
+    <keep-alive>
+      <Graph :url="url" />
+    </keep-alive>
   </div>
 </template>
 <script>
-import axios from 'axios'
-axios.get('http://9.86.69.48:8081/callgraph')
-  .then((response) => console.log(response))
-  .catch(err => console.log(err))
-
+import Graph from '../../../components/Graph/index'
 export default {
+  components: {
+    Graph
+  },
   data() {
     return {
-      data: ''
+      id: '',
+      isAll: false,
+      url: 'http://9.86.69.48:8081/modifygraph'
     }
+  },
+  mounted() {
+    this.id = this.$route.query.id
   }
 }
 </script>

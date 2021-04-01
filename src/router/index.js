@@ -86,8 +86,7 @@ export const constantRoutes = [
       path: 'show',
       name: '评估结果',
       hidden: true,
-      component: () => import('@/views/result/show/index'),
-      meta: { title: '项目列表', icon: 'table' }
+      component: () => import('@/views/result/show/index')
     }]
   },
   // 404 page must be placed at the end !!!

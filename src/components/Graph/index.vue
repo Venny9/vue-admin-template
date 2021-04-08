@@ -1,6 +1,23 @@
 <template>
   <div class="down">
     <div id="mountNode" class="mountNode" />
+    <div class="searchlist">
+      <div class="line">
+        <label>在当前视图搜索</label>
+      </div>
+      <div class="line">
+        <label for="class"> 类 名 </label>
+        <input id="class" type="text" class="search" placeholder="选填" />
+      </div>
+      <div class="line">
+        <label for="method"> 函 数 </label>
+        <input id="method" type="text" class="search" placeholder="必填" />
+      </div>
+      <div class="line">
+        <button class="gradient blue" style="margin-left: 100px">清空</button>
+        <button class="gradient blue" style="margin-left: 15px">搜索</button>
+      </div>
+    </div>
     <div id="message" class="message">
       <p>message</p>
       <p>id: {{ node.id }}</p>
@@ -161,8 +178,8 @@ export default {
   width: 1000px;
   height: 800px;
 }
-.message {
-  text-align: left;
+.searchlist {
+  text-align: center;
   position: absolute;
   top: 0px;
   left: 1002px;
@@ -170,7 +187,28 @@ export default {
   border-width: 2px;
   border-color: #9550a0;
   width: 300px;
+  height: 150px;
+  padding: 4px;
+}
+.line {
+  padding: 4px;
+}
+.search {
+  font-size: 16px;
+  padding: 4px 8px;
+  margin-right: 6px;
+}
+.message {
+  text-align: left;
+  position: absolute;
+  top: 153px;
+  left: 1002px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #9550a0;
+  width: 300px;
   height: 400px;
+  padding: 4px;
 }
 .g6-tooltip {
   padding: 6px 6px;

@@ -14,7 +14,7 @@
         <input id="method" type="text" class="search" placeholder="必填" />
       </div>
       <div class="line">
-        <button class="gradient blue" style="margin-left: 100px">清空</button>
+        <button class="gradient" style="margin-left: 100px">清空</button>
         <button class="gradient blue" style="margin-left: 15px">搜索</button>
       </div>
     </div>
@@ -170,8 +170,9 @@ export default {
 }
 .mountNode {
   border-style: solid;
-  border-width: 2px;
-  border-color: #9550a0;
+  border-width: 1px;
+  border-color: rgba(0, 0, 0, 0.21);
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
   position: absolute;
   top: 0px;
   left: 0px;
@@ -182,39 +183,44 @@ export default {
   text-align: center;
   position: absolute;
   top: 0px;
-  left: 1002px;
+  left: 1004px;
   border-style: solid;
-  border-width: 2px;
-  border-color: #9550a0;
+  border-width: 1px;
+  border-color: rgba(0, 0, 0, 0.21);
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
   width: 300px;
-  height: 150px;
-  padding: 4px;
+  height: 200px;
+  padding: 16px;
 }
 .line {
-  padding: 4px;
+  padding: 7px;
 }
 .search {
   font-size: 16px;
   padding: 4px 8px;
   margin-right: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.21);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.21);
+  border-radius: 4px;
 }
 .message {
   text-align: left;
   position: absolute;
-  top: 153px;
-  left: 1002px;
+  top: 206px;
+  left: 1004px;
   border-style: solid;
-  border-width: 2px;
-  border-color: #9550a0;
+  border-width: 1px;
+  border-color: rgba(0, 0, 0, 0.21);
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
   width: 300px;
-  height: 400px;
+  height: 594px;
   padding: 4px;
 }
 .g6-tooltip {
   padding: 6px 6px;
   color: #444;
   background-color: rgba(254, 254, 254, 0.9);
-  border: 1px solid #9550a0;
+  border: 1px solid rgba(0, 0, 0, 0.21);
   border-radius: 4px;
 }
 .g6-component-toolbar {
@@ -223,10 +229,11 @@ export default {
   left: 202px;
   border-style: solid;
   border-width: 1px;
-  border-color: #9550a0;
+  border-color: rgba(0, 0, 0, 0.21);
 }
 .minimap {
-  border: 1px solid #9550a0;
+  border-right: 1px solid rgba(0, 0, 0, 0.21);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.21);
   background: #fefefe;
   opacity: 0.9;
   position: absolute;
@@ -234,6 +241,6 @@ export default {
   left: 0px;
 }
 .g6-minimap-viewport {
-  border: 1px solid #9550a0;
+  border: 1px solid rgba(0, 0, 0, 0.45);
 }
 </style>

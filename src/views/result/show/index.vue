@@ -6,18 +6,36 @@
       <span v-else-if="score >= 60" class="level yellow">中</span>
       <span v-else class="level red">高</span>
     </div>
-    <div class="font box">
-      <p>Git分支号 : {{ gitbranch }}</p>
-      <p>Git修订版 : {{ gitrevision }}</p>
-      <p>修改函数 :
+    <div class="box">
+      <el-table
+        :data="tableData"
+        border
+        :show-header="false"
+        style="width: 100%"
+        :highlight-current-row="true"
+      >
+        <el-table-column prop="key" width="200" />
+        <el-table-column prop="value">
+          <template slot-scope="scope">
+            <scan v-if="scope.row.key == '影响调用链百分比'">
+              {{ scope.row.value }}
+              <el-link type="primary" class="link">(详情)</el-link>
+            </scan>
+            <scan v-else>{{ scope.row.value }}</scan>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- <p>Git分支号 : {{ gitbranch }}</p> -->
+      <!-- <p>Git修订版 : {{ gitrevision }}</p> -->
+      <!-- <p>修改函数 :
         <ul>
           <li v-for="item in changedMethodList" :key="item">
             {{ item}}
           </li>
         </ul>
-      </p>
-      <p>影响调用链百分比: 2% <el-link type="info">(详情)</el-link></p>
-      <p>影响接口:
+      </p> -->
+      <!-- <p>影响调用链百分比: 2% <el-link type="info">(详情)</el-link></p> -->
+      <!-- <p>影响接口:
         <ul>
           <li v-for="item in affectedAPI" :key="item">
             {{ item}}
@@ -25,7 +43,7 @@
         </ul>
       </p>
       <p>调用链覆盖率：暂无</p>
-      <p>关联历史bug数：暂无</p>
+      <p>关联历史bug数：暂无</p> -->
     </div>
     <div class="font box" style="height: 950px">
       <p>
@@ -60,13 +78,35 @@ export default {
   data() {
     return {
       id: '', // 拼接到url中
-      gitrevision: 'ad8550fc1b3401a69ce0117dbb19b91da80c5c86',
-      gitbranch: 'feature/20210323-dpa-update-proto',
-      changedMethodList: ['setConversionClaim', 'modifyClaimTypeToImpressionAttribution', 'updateImpressionAttributionWhiteList', 'schedulerUpdateConfig'],
-      affectedAPI: ['action/add', 'action/addvenny'],
+      // gitrevision: 'ad8550fc1b3401a69ce0117dbb19b91da80c5c86',
+      // gitbranch: 'feature/20210323-dpa-update-proto',
+      // changedMethodList: ['setConversionClaim', 'modifyClaimTypeToImpressionAttribution', 'updateImpressionAttributionWhiteList', 'schedulerUpdateConfig'],
+      // affectedAPI: ['action/add', 'action/addvenny'],
       isAll: false,
       score: 20,
-      url: 'http://9.86.69.48:8081/modifygraph'
+      url: 'http://9.86.69.48:8081/modifygraph',
+      tableData: [{
+        key: 'Git分支号',
+        value: 'feature/20210323-dpa-update-proto'
+      }, {
+        key: 'Git修订版',
+        value: 'ad8550fc1b3401a69ce0117dbb19b91da80c5c86'
+      }, {
+        key: '修改函数',
+        value: 'setConversionClaim\nmodifyClaimTypeToImpressionAttribution\nupdateImpressionAttributionWhiteList\nschedulerUpdateConfig'
+      }, {
+        key: '影响调用链百分比',
+        value: '2%'
+      }, {
+        key: '影响接口',
+        value: 'action/add\naction/addvenny'
+      }, {
+        key: '调用链覆盖率',
+        value: '暂无'
+      }, {
+        key: '关联历史bug数',
+        value: '暂无'
+      }]
     }
   },
   mounted() {
@@ -97,7 +137,7 @@ export default {
 }
 .font {
   text-align: left;
-  font-size: 20px;
+  font-size: 18px;
 }
 .box {
   width: 1350px;
@@ -148,5 +188,11 @@ export default {
 .gradient.blue:active {
   color: white;
   background: #2b8beb;
+}
+.el-table .cell {
+  white-space: pre-line;
+}
+.link {
+  vertical-align: baseline;
 }
 </style>

@@ -320,6 +320,7 @@ export default {
   methods: {
     handleClick(tab, event) {
       if (tab.label == '全局视图' && this.firstInit) {
+        this.firstInit = false;
         this.beginAllGraph();
       }
     },

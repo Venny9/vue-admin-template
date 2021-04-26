@@ -146,6 +146,7 @@ export default {
     axios.get(this.url).then(response => {
       this.graphData = response.data
       // 修改label字段
+      console.log(this.graphData)
       this.graphData.nodes.forEach((node) => {
         node.label = fittingString(node.label, 40, 12)
       })

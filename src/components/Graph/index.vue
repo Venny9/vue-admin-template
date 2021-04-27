@@ -1,27 +1,43 @@
 <template>
   <div class="down">
-    <div id="mountNode" class="mountNode" />
+    <div :id="canvas" class="mountNode" />
     <div class="searchlist">
       <div class="line">
-        <label>在当前视图搜索</label>
+        <label>子视图搜索</label>
       </div>
       <div class="line">
-        <label for="class"> 类 名 </label>
-        <input id="class" type="text" class="search" placeholder="选填" />
+        <label> 类 名 </label>
+        <input
+          type="text"
+          class="search"
+          placeholder="选填"
+          v-model="searchclass"
+        />
       </div>
       <div class="line">
-        <label for="method"> 函 数 </label>
-        <input id="method" type="text" class="search" placeholder="必填" />
+        <label> 函 数 </label>
+        <input
+          type="text"
+          class="search"
+          placeholder="必填"
+          v-model="searchmethod"
+        />
       </div>
       <div class="line">
-        <button class="gradient" style="margin-left: 100px">清空</button>
-        <button class="gradient blue" style="margin-left: 15px">搜索</button>
+        <el-button type="primary" @click="empty" style="margin-left: 30px" plain
+          >清空</el-button
+        >
+        <el-button type="primary" :disabled="isdisabledFn" @click="searchGraph"
+          >搜索</el-button
+        >
       </div>
     </div>
-    <div id="message" class="message">
+    <div class="message">
       <p>message</p>
       <p>id: {{ node.id }}</p>
       <p>name: {{ node.method }}</p>
+      <p>class: {{ node.class }}</p>
+      <p>parameters: {{ node.parameters }}</p>
     </div>
   </div>
 </template>
@@ -73,95 +89,145 @@ export default {
     url: {
       type: String,
       required: true
+    },
+    init: {
+      type: Boolean,
+      default: true
+    },
+    idkey: {
+      type: String,
+      required: true
     }
   },
   data() {
     return {
+      canvas: null,
       graph: null,
       graphData: null,
+      minimap: null,
+      toolbar: null,
+      searchclass: '',
+      searchmethod: '',
       node: {
         id: '',
-        method: ''
+        method: '',
+        class: '',
+        parameters: ''
       }
     }
   },
+  created() {
+    this.canvas = 'mountNode' + this.idkey
+  },
   mounted() {
-    const minimap = new G6.Minimap({
-      container: 'mountNode',
-      size: [200, 160],
-      className: 'minimap',
-      type: 'default'
-    })
-    const toolbar = new G6.ToolBar({
-      container: 'mountNode'
-    })
-    this.graph = new G6.Graph({
-      container: 'mountNode',
-      width: 1000,
-      height: 800,
-      enabledStack: true,
-      layout: {
-        type: 'force',
-        preventOverlap: true,
-        onTick: () => {
-          console.log('ticking')
+    if (this.init) {
+      this.beginGraph()
+    }
+  },
+  methods: {
+    beginGraph() {
+      console.log(this.canvas)
+      this.minimap = new G6.Minimap({
+        container: this.canvas,
+        size: [200, 160],
+        className: 'minimap',
+        type: 'default'
+      })
+      this.toolbar = new G6.ToolBar({
+        container: this.canvas
+      })
+      this.graph = new G6.Graph({
+        container: this.canvas,
+        width: 1000,
+        height: 800,
+        enabledStack: true,
+        layout: {
+          type: 'force',
+          preventOverlap: true,
+          onTick: () => {
+            console.log('ticking')
+          },
+          onLayoutEnd: () => {
+            console.log('force layout done')
+          }
         },
-        onLayoutEnd: () => {
-          console.log('force layout done')
-        }
-      },
-      defaultNode: {
-        labelCfg: {
-          position: 'center',
+        defaultNode: {
+          labelCfg: {
+            position: 'center',
+            style: {
+              fontSize: 6
+            }
+          }
+        },
+        defaultEdge: {
           style: {
-            fontSize: 6
+            endArrow: true
+          },
+          labelCfg: {
+            autoRotate: true
           }
-        }
-      },
-      defaultEdge: {
-        style: {
-          endArrow: true
         },
-        labelCfg: {
-          autoRotate: true
-        }
-      },
-      modes: {
-        default: [
-          'zoom-canvas',
-          'drag-canvas',
-          'drag-node',
-          'activate-relations',
-          {
-            type: 'tooltip',
-            formatText(model) {
-              return model.method
-            },
-            offset: 2
-          }
-        ]
-      },
-      plugins: [minimap, toolbar]
-    })
-    axios.get(this.url).then(response => {
-      this.graphData = response.data
-      // 修改label字段
-      console.log(this.graphData)
-      this.graphData.nodes.forEach((node) => {
-        node.label = fittingString(node.label, 40, 12)
+        modes: {
+          default: [
+            'zoom-canvas',
+            'drag-canvas',
+            'drag-node',
+            // 'activate-relations',
+            {
+              type: 'tooltip',
+              formatText(model) {
+                return model.method
+              },
+              offset: 4
+            }
+          ]
+        },
+        plugins: [this.minimap, this.toolbar]
       })
-      // 修改节点颜色
-      /* this.graphData.nodes.forEach((i) => {
-        i.style = Object.assign(i.style || {}, {
-          fill: '#F79767'
+      axios.get(this.url).then(response => {
+        this.graphData = response.data
+        // 修改label字段
+        console.log(this.graphData)
+        this.graphData.nodes.forEach((node) => {
+          node.label = fittingString(node.label, 40, 12)
         })
-      }) */
-      this.graph.read(this.graphData)
-      this.graph.on('node:click', evt => {
-        this.node.id = evt.item.getModel().id
-        this.node.method = evt.item.getModel().method
-      })
-    }).catch(error => console.log(error))
+        // 修改节点颜色
+        this.graphData.nodes.forEach((i) => {
+          if (i.isChanged) {
+            i.style = Object.assign(i.style || {}, {
+              fill: '#F79767'
+            })
+          }
+        })
+        this.graph.read(this.graphData)
+        this.graph.on('node:click', evt => {
+          this.node.id = evt.item.getModel().id
+          this.node.method = evt.item.getModel().method
+          this.node.class = evt.item.getModel().class
+          this.node.parameters = evt.item.getModel().parameters
+        })
+      }).catch(error => console.log(error))
+    },
+    empty() {
+      this.searchclass = ''
+      this.searchmethod = ''
+    },
+    searchGraph() {
+      console.log('search')
+      // if nomethod
+      // alert
+      // else havemethod
+      // 调用父组件
+    }
+  },
+  computed: {
+    isdisabledFn() {
+      if (this.searchmethod !== '') {
+        return false
+      } else {
+        return true
+      }
+    }
   }
 }
 </script>

@@ -46,6 +46,7 @@
 </template>
 <script>
 import Graph from '@/components/Graph'
+import axios from 'axios'
 
 export default {
   components: {
@@ -58,35 +59,21 @@ export default {
       score: 20,
       parturl: '',
       allurl: '',
-      tableData: [{
-        key: 'Git分支号',
-        value: 'feature/20210323-dpa-update-proto'
-      }, {
-        key: 'Git修订版',
-        value: 'ad8550fc1b3401a69ce0117dbb19b91da80c5c86'
-      }, {
-        key: '修改函数',
-        value: 'setConversionClaim\nmodifyClaimTypeToImpressionAttribution\nupdateImpressionAttributionWhiteList\nschedulerUpdateConfig'
-      }, {
-        key: '影响调用链百分比',
-        value: '2%'
-      }, {
-        key: '影响接口',
-        value: 'action/add\naction/addvenny'
-      }, {
-        key: '调用链覆盖率',
-        value: '暂无'
-      }, {
-        key: '关联历史bug数',
-        value: '暂无'
-      }]
+      riskurl: '',
+      tableData: null
     }
   },
   created() {
     this.id = this.$route.query.id
     this.parturl = 'http://9.86.69.48:8081/modifygraph?projectid=' + this.id + '&gitversion=&branchname='
     this.allurl = 'http://9.86.69.48:8081/callgraph?projectid=' + this.id + '&gitversion=&branchname='
-    console.log('parturl ' + this.parturl)
+    this.riskurl = 'http://9.86.69.48:8081/getrisk?projectid=' + this.id + '&gitversion&branchname='
+  },
+  mounted() {
+    axios.get(this.riskurl).then(response => {
+      console.log(response.data)
+      this.tableData = response.data.data
+    }).catch(error => console.log(error))
   },
   methods: {
     handleClick(tab, event) {
@@ -140,5 +127,14 @@ export default {
 }
 .link {
   vertical-align: baseline;
+}
+.yellow {
+  background: #fac858;
+}
+.green {
+  background: #41b584;
+}
+.red {
+  background: #f34d37;
 }
 </style>

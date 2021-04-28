@@ -20,47 +20,52 @@
             <span v-else class="level red">高风险</span>
             本次得分 : {{ score }}
           </p>
+          <jsCdn
+            cdn="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_HTML"
+          />
           <el-collapse v-model="activeNames">
             <el-collapse-item title="模型定义" name="1">
-              <p>
-                与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；
-              </p>
               <div>
-                在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。
+                函数调用链视图是基于静态+动态分析获得的为以单个函数为节点，调用关系为边的有向图。
+              </div>
+              <div>
+                风险评估模型是基于函数调用链，并且综合代码质量、业务场景、测试质量、历史问题等，给出的本次代码修改潜在风险评估。
+              </div>
+              <div>计算公式：</div>
+              <vue-mathjax
+                formula="$$SQA( SCC_{i}  )= \sum\limits_{j=1}^mSQA( F_{i,j,project} ) \times  ra1 + SQA( Business_{i} ) \times ra2 + SQA( Test_{j} ) \times ra3 $$"
+              />
+              <vue-mathjax formula=" $$+ SQA( Defect_{i} ) \times ra4 $$" />
+              <div>
+                其中，SQA(Software quality
+                assessment)表示软件质量评估；SCC(Software code
+                change)表示软件代码变更；ra*表示风险系数，不同维度风险系数定义不同。
               </div>
             </el-collapse-item>
-            <el-collapse-item title="project" name="2">
-              <div>
-                控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；
-              </div>
-              <div>
-                页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。
-              </div>
+            <el-collapse-item title="代码质量 Project" name="2">
+              <vue-mathjax
+                formula=" $$ SQA( F_{j,project} )= \frac{O(Fj)- O_{standard} }{ O_{standard} }  \times  \alpha +  \frac{Outdegree( F_{j} )  \times  Indegree( F_{j} )}{LinksCount}  \times \beta $$"
+              />
+              <div>代码质量通过函数圈复杂度和函数的中心性...解释</div>
+              <div>本次计算：修改函数 圈复杂度 中心性</div>
             </el-collapse-item>
-            <el-collapse-item title="business" name="3">
-              <div>简化流程：设计简洁直观的操作流程；</div>
-              <div>
-                清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；
-              </div>
-              <div>
-                帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。
-              </div>
+            <el-collapse-item title="业务场景 Business" name="3">
+              <vue-mathjax
+                formula="$$SQA( Business_{i} )= \frac{ \sum\limits_{k=1}^m( bc_{k} \times  Priority_{k}  ) }{ \sum\limits_{k=1}^n( bc_{k} \times  Priority_{k}  )}$$"
+              />
+              <div>本次影响的接口 优先级系数</div>
             </el-collapse-item>
-            <el-collapse-item title="test" name="4">
-              <div>
-                用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；
-              </div>
-              <div>
-                结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。
-              </div>
+            <el-collapse-item title="测试质量 Test" name="4">
+              <vue-mathjax
+                formula="$$SQA( Test_{i} )= \frac{CoveredLinkscount - Linkscount}{Linkscount}$$"
+              />
+              <div>本次测试覆盖详情</div>
             </el-collapse-item>
-            <el-collapse-item title="defect" name="4">
-              <div>
-                用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；
-              </div>
-              <div>
-                结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。
-              </div>
+            <el-collapse-item title="历史问题 Defect" name="5">
+              <vue-mathjax
+                formula="$$SQA( Defect_{i} )=   \frac{ \sum\limits_{k=1}^m Defectcount_{k}  }{\sum\limits_{k=1}^n Defectcount_{k} }$$"
+              />
+              <div>历史相关调用链出现问题频率</div>
             </el-collapse-item>
           </el-collapse>
         </div>
@@ -108,10 +113,28 @@
 <script>
 import Graph from '@/components/Graph'
 import axios from 'axios'
+import { VueMathjax } from 'vue-mathjax'
 
 export default {
   components: {
-    Graph
+    Graph,
+    'vue-mathjax': VueMathjax,
+    'jsCdn': {
+      render(_) {
+        return _('script', {
+          attrs: {
+            type: 'text/javascript',
+            src: this.cdn
+          }
+        })
+      },
+      props: {
+        cdn: {
+          type: String,
+          required: true
+        }
+      }
+    }
   },
   data() {
     return {
@@ -205,5 +228,10 @@ export default {
 }
 .el-collapse-item__content {
   font-size: 15px;
+}
+.el-avatar,
+.el-drawer {
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 </style>

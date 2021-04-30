@@ -102,10 +102,30 @@
       @tab-click="handleClick"
     >
       <el-tab-pane label="改动视图">
-        <Graph ref="partGraph" idkey="part" :url="parturl" />
+        <Graph
+          ref="partGraph"
+          idkey="part"
+          :url="parturl"
+          @searchMethodGraph="searchMethodGraph"
+        />
       </el-tab-pane>
       <el-tab-pane label="全局视图">
-        <Graph ref="allGraph" idkey="all" :url="allurl" :init="false" />
+        <Graph
+          ref="allGraph"
+          idkey="all"
+          :url="allurl"
+          :init="false"
+          @searchMethodGraph="searchMethodGraph"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="搜索视图" :disabled="!isSearch">
+        <Graph
+          ref="searchGraph"
+          idkey="search"
+          :url="searchurl"
+          :init="false"
+          @searchMethodGraph="searchMethodGraph"
+        />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -145,8 +165,10 @@ export default {
       score: 90,
       parturl: '',
       allurl: '',
+      searchurl: '',
       riskurl: '',
-      tableData: null
+      tableData: null,
+      isSearch: false
     }
   },
   created() {
@@ -165,7 +187,24 @@ export default {
     handleClick(tab, event) {
       if (tab.label === '全局视图' && this.firstInit) {
         this.firstInit = false
-        this.$refs.allGraph.beginGraph()
+        this.$refs.allGraph.beginGraph(this.allurl)
+      }
+    },
+    searchMethodGraph(method) {
+      console.log(method)
+      // TODO 拼一个searchurl
+      if (method === 'venny') {
+        this.searchurl = this.allurl
+      } else {
+        this.searchurl = this.parturl
+      }
+      if (!this.isSearch) {
+        this.isSearch = true
+        // 如果是第一次画，开始画图
+        this.$refs.searchGraph.beginGraph(this.searchurl)
+      } else {
+        // 不是第一次，修改数据
+        this.$refs.searchGraph.changeGraph(this.searchurl)
       }
     }
   }

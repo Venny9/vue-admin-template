@@ -116,16 +116,25 @@ export default {
       }
     }
   },
+  computed: {
+    isdisabledFn() {
+      if (this.searchmethod !== '') {
+        return false
+      } else {
+        return true
+      }
+    }
+  },
   created() {
     this.canvas = 'mountNode' + this.idkey
   },
   mounted() {
     if (this.init) {
-      this.beginGraph()
+      this.beginGraph(this.url)
     }
   },
   methods: {
-    beginGraph() {
+    beginGraph(finalurl) {
       console.log(this.canvas)
       this.minimap = new G6.Minimap({
         container: this.canvas,
@@ -184,7 +193,32 @@ export default {
         },
         plugins: [this.minimap, this.toolbar]
       })
-      axios.get(this.url).then(response => {
+      axios.get(finalurl).then(response => {
+        this.graphData = response.data
+        // 修改label字段
+        console.log(this.graphData)
+        this.graphData.nodes.forEach((node) => {
+          node.label = fittingString(node.label, 40, 12)
+        })
+        // 修改节点颜色
+        this.graphData.nodes.forEach((i) => {
+          if (i.isChanged) {
+            i.style = Object.assign(i.style || {}, {
+              fill: '#F79767'
+            })
+          }
+        })
+        this.graph.read(this.graphData)
+        this.graph.on('node:click', evt => {
+          this.node.id = evt.item.getModel().id
+          this.node.method = evt.item.getModel().method
+          this.node.class = evt.item.getModel().class
+          this.node.parameters = evt.item.getModel().parameters
+        })
+      }).catch(error => console.log(error))
+    },
+    changeGraph(finalurl) {
+      axios.get(finalurl).then(response => {
         this.graphData = response.data
         // 修改label字段
         console.log(this.graphData)
@@ -214,19 +248,11 @@ export default {
     },
     searchGraph() {
       console.log('search')
-      // if nomethod
+      // TODO if nomethod
       // alert
       // else havemethod
       // 调用父组件
-    }
-  },
-  computed: {
-    isdisabledFn() {
-      if (this.searchmethod !== '') {
-        return false
-      } else {
-        return true
-      }
+      this.$emit('searchMethodGraph', this.searchmethod)
     }
   }
 }

@@ -308,6 +308,7 @@ export default {
   width: 300px;
   height: 594px;
   padding: 4px;
+  word-wrap: break-word;
 }
 .g6-tooltip {
   padding: 6px 6px;

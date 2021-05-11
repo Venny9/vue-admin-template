@@ -2,9 +2,9 @@
   <div class="app-container">
     <div class="font box">
       <label>风险评估等级</label>
-      <span v-if="score >= 85" class="level green">低风险</span>
-      <span v-else-if="score >= 60" class="level yellow">中风险</span>
-      <span v-else class="level red">高风险</span>
+      <span v-if="score >= 70" class="level red">高风险</span>
+      <span v-else-if="score >= 35" class="level yellow">中风险</span>
+      <span v-else-if="score >= 0" class="level green">低风险</span>
       <el-button type="text" @click="drawer = true"> （详情） </el-button>
       <el-drawer
         title="风险评估模型计算过程"
@@ -15,9 +15,9 @@
         <div class="box" style="width: 770px">
           <label>风险评估模型</label>
           <p style="font-size: 15px">
-            <span v-if="score >= 85" class="level green">低风险</span>
-            <span v-else-if="score >= 60" class="level yellow">中风险</span>
-            <span v-else class="level red">高风险</span>
+            <span v-if="score >= 70" class="level red">高风险</span>
+            <span v-else-if="score >= 35" class="level yellow">中风险</span>
+            <span v-else-if="score >= 0" class="level green">低风险</span>
             本次得分 : {{ score }}
           </p>
           <jsCdn
@@ -46,12 +46,12 @@
               <vue-mathjax
                 formula=" $$ SQA( F_{j,project} )= \frac{O(Fj)- O_{standard} }{ O_{standard} }  \times  \alpha +  \frac{Outdegree( F_{j} )  \times  Indegree( F_{j} )}{LinksCount}  \times \beta $$"
               />
-              <div>代码质量通过函数圈复杂度和函数的中心性...解释</div>
-              <div>本次计算：修改函数 圈复杂度 中心性</div>
+              <div>代码质量通过函数圈复杂度和函数出度和入度...解释</div>
+              <div>本次计算：修改函数 圈复杂度 出度/入度</div>
             </el-collapse-item>
             <el-collapse-item title="业务场景 Business" name="3">
               <vue-mathjax
-                formula="$$SQA( Business_{i} )= \frac{ \sum\limits_{k=1}^m( bc_{k} \times  Priority_{k}  ) }{ \sum\limits_{k=1}^n( bc_{k} \times  Priority_{k}  )}$$"
+                formula="$$SQA( Business_{i} )= \frac{ \sum\limits_{k=1}^m( \lg Priority_{k}  ) }{ \sum\limits_{k=1}^n( \lg Priority_{k}  )}$$"
               />
               <div>本次影响的接口 优先级系数</div>
             </el-collapse-item>
@@ -96,12 +96,13 @@
       <label> 调用链视图类型 </label>
     </div>
     <el-tabs
+      v-model="activeName"
       type="card"
       class="font box"
       style="padding: 0px"
       @tab-click="handleClick"
     >
-      <el-tab-pane label="改动视图">
+      <el-tab-pane label="改动视图" name="1">
         <Graph
           ref="partGraph"
           idkey="part"
@@ -109,7 +110,7 @@
           @searchMethodGraph="searchMethodGraph"
         />
       </el-tab-pane>
-      <el-tab-pane label="全局视图">
+      <el-tab-pane label="全局视图" name="2">
         <Graph
           ref="allGraph"
           idkey="all"
@@ -118,7 +119,7 @@
           @searchMethodGraph="searchMethodGraph"
         />
       </el-tab-pane>
-      <el-tab-pane label="搜索视图" :disabled="!isSearch">
+      <el-tab-pane label="搜索视图" :disabled="!isSearch" name="3">
         <Graph
           ref="searchGraph"
           idkey="search"
@@ -159,10 +160,11 @@ export default {
   data() {
     return {
       drawer: false,
+      activeName: "1",
       activeNames: ['1'],
       id: '', // 拼接到url中
       firstInit: true,
-      score: 90,
+      score: -1,
       parturl: '',
       allurl: '',
       searchurl: '',
@@ -176,11 +178,10 @@ export default {
     this.parturl = 'http://9.86.69.48:8081/modifygraph?projectid=' + this.id + '&gitversion=&branchname='
     this.allurl = 'http://9.86.69.48:8081/callgraph?projectid=' + this.id + '&gitversion=&branchname='
     this.riskurl = 'http://9.86.69.48:8081/getrisk?projectid=' + this.id + '&gitversion&branchname='
-  },
-  mounted() {
     axios.get(this.riskurl).then(response => {
       console.log(response.data)
       this.tableData = response.data.data
+      this.score = response.data.riskLevel
     }).catch(error => console.log(error))
   },
   methods: {
@@ -206,6 +207,7 @@ export default {
         // 不是第一次，修改数据
         this.$refs.searchGraph.changeGraph(this.searchurl)
       }
+      this.activeName = "3"
     }
   }
 }

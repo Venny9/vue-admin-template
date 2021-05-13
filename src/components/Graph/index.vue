@@ -33,11 +33,28 @@
       </div>
     </div>
     <div class="message">
-      <p>message</p>
-      <p>id: {{ node.id }}</p>
-      <p>name: {{ node.method }}</p>
-      <p>class: {{ node.class }}</p>
-      <p>parameters: {{ node.parameters }}</p>
+      <div class="line" style="text-align: center">
+        <label>函数信息</label>
+      </div>
+      <div class="hint">
+        <label>（点击左图节点展示）</label>
+      </div>
+      <div class="message_line">
+        <p>函数名称:</p>
+        {{ node.method }}
+      </div>
+      <div class="message_line">
+        <p>所在类名:</p>
+        {{ node.class }}
+      </div>
+      <div class="message_line">
+        <p>参数列表:</p>
+        <ul>
+          <li v-for="(item, index) in node.parameters" :key="index">
+            {{ item }}
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -112,7 +129,7 @@ export default {
         id: '',
         method: '',
         class: '',
-        parameters: ''
+        parameters: null
       }
     }
   },
@@ -185,7 +202,7 @@ export default {
             {
               type: 'tooltip',
               formatText(model) {
-                return model.method
+                return model.name
               },
               offset: 4
             }
@@ -193,36 +210,16 @@ export default {
         },
         plugins: [this.minimap, this.toolbar]
       })
-      axios.get(finalurl).then(response => {
-        this.graphData = response.data
-        // 修改label字段
-        console.log(this.graphData)
-        this.graphData.nodes.forEach((node) => {
-          node.label = fittingString(node.label, 40, 12)
-        })
-        // 修改节点颜色
-        this.graphData.nodes.forEach((i) => {
-          if (i.isChanged) {
-            i.style = Object.assign(i.style || {}, {
-              fill: '#F79767'
-            })
-          }
-        })
-        this.graph.read(this.graphData)
-        this.graph.on('node:click', evt => {
-          this.node.id = evt.item.getModel().id
-          this.node.method = evt.item.getModel().method
-          this.node.class = evt.item.getModel().class
-          this.node.parameters = evt.item.getModel().parameters
-        })
-      }).catch(error => console.log(error))
+      this.changeGraph(finalurl)
     },
     changeGraph(finalurl) {
       axios.get(finalurl).then(response => {
+        console.log(finalurl)
         this.graphData = response.data
         // 修改label字段
         console.log(this.graphData)
         this.graphData.nodes.forEach((node) => {
+          node.name = node.label
           node.label = fittingString(node.label, 40, 12)
         })
         // 修改节点颜色
@@ -236,9 +233,20 @@ export default {
         this.graph.read(this.graphData)
         this.graph.on('node:click', evt => {
           this.node.id = evt.item.getModel().id
-          this.node.method = evt.item.getModel().method
-          this.node.class = evt.item.getModel().class
-          this.node.parameters = evt.item.getModel().parameters
+          var getOneFunc = "http://9.86.69.48:8081/getOneFunc?funcid=" + this.node.id
+          axios.get(getOneFunc).then(response => {
+            if (response.data.errcode === 0) {
+              this.node.method = response.data.method
+              this.node.class = response.data.class
+              if (response.data.parameters.includes(",")) {
+                var tmpArray = response.data.parameters.split(',')
+                this.node.parameters = tmpArray
+                console.log(this.node.parameters)
+              } else if (response.data.parameters !== null) {
+                this.node.parameters = [response.data.parameters]
+              }
+            }
+          }).catch(error => console.log(error))
         })
       }).catch(error => console.log(error))
     },
@@ -288,6 +296,10 @@ export default {
 .line {
   padding: 7px;
 }
+.message_line {
+  padding-left: 7px;
+  padding-right: 7px;
+}
 .search {
   font-size: 16px;
   padding: 4px 8px;
@@ -307,8 +319,13 @@ export default {
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
   width: 300px;
   height: 594px;
-  padding: 4px;
+  padding: 16px;
   word-wrap: break-word;
+}
+.hint {
+  text-align: center;
+  font-size: 8px;
+  color: #409eff;
 }
 .g6-tooltip {
   padding: 6px 6px;
@@ -336,5 +353,17 @@ export default {
 }
 .g6-minimap-viewport {
   border: 1px solid rgba(0, 0, 0, 0.45);
+}
+p {
+  font-size: 14px;
+  color: rgb(104, 103, 103);
+  margin: 2px;
+  padding-top: 16px;
+  margin-left: 0px;
+}
+ul {
+  margin: 0px;
+  padding-left: 20px;
+  padding-right: 16px;
 }
 </style>

@@ -107,6 +107,7 @@
           ref="partGraph"
           idkey="part"
           :url="parturl"
+          :id="id"
           @searchMethodGraph="searchMethodGraph"
         />
       </el-tab-pane>
@@ -115,6 +116,7 @@
           ref="allGraph"
           idkey="all"
           :url="allurl"
+          :id="id"
           :init="false"
           @searchMethodGraph="searchMethodGraph"
         />
@@ -123,6 +125,7 @@
         <Graph
           ref="searchGraph"
           idkey="search"
+          :id="id"
           :url="searchurl"
           :init="false"
           @searchMethodGraph="searchMethodGraph"
@@ -191,14 +194,8 @@ export default {
         this.$refs.allGraph.beginGraph(this.allurl)
       }
     },
-    searchMethodGraph(method) {
-      console.log(method)
-      // TODO 拼一个searchurl
-      if (method === 'venny') {
-        this.searchurl = this.allurl
-      } else {
-        this.searchurl = this.parturl
-      }
+    searchMethodGraph(searchurl) {
+      this.searchurl = searchurl
       if (!this.isSearch) {
         this.isSearch = true
         // 如果是第一次画，开始画图

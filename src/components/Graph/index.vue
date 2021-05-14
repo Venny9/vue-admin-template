@@ -114,6 +114,10 @@ export default {
     idkey: {
       type: String,
       required: true
+    },
+    id: {
+      type: String,
+      required: true
     }
   },
   data() {
@@ -256,11 +260,22 @@ export default {
     },
     searchGraph() {
       console.log('search')
-      // TODO if nomethod
-      // alert
-      // else havemethod
-      // 调用父组件
-      this.$emit('searchMethodGraph', this.searchmethod)
+
+      var searchurl = 'http://9.86.69.48:8081/searchgraph?projectid=' + this.id + '&gitversion=&branchname&class=' + this.searchclass + '&function=' + this.searchmethod
+      axios.get(searchurl).then(response => {
+        console.log(response)
+        if (response.data.nodes.length == 0) {
+          // alert
+          this.$alert('搜索方法不存在', '提示', {
+            confirmButtonText: '确定'
+          });
+        } else {
+          // 调用父组件
+          this.$emit('searchMethodGraph', searchurl)
+        }
+      }).catch(error => console.log(error))
+
+
     }
   }
 }

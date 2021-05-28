@@ -10,7 +10,9 @@
 export default {
   data() {
     return {
-      id: '45180'
+      id: '45180',
+      gitversion: '',
+      branchname: ''
     }
   },
   methods: {
@@ -18,7 +20,9 @@ export default {
       this.$router.push({
         path: '/result/show',
         query: {
-          id: this.id
+          id: this.id,
+          gitversion: this.gitversion,
+          branchname: this.branchname
         }
       })
     }

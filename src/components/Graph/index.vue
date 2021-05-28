@@ -156,7 +156,7 @@ export default {
   },
   methods: {
     beginGraph(finalurl) {
-      console.log(this.canvas)
+      // console.log(this.canvas)
       this.minimap = new G6.Minimap({
         container: this.canvas,
         size: [200, 160],
@@ -221,7 +221,7 @@ export default {
         console.log(finalurl)
         this.graphData = response.data
         // 修改label字段
-        console.log(this.graphData)
+        // console.log(this.graphData)
         this.graphData.nodes.forEach((node) => {
           node.name = node.label
           node.label = fittingString(node.label, 40, 12)
@@ -245,7 +245,7 @@ export default {
               if (response.data.parameters.includes(",")) {
                 var tmpArray = response.data.parameters.split(',')
                 this.node.parameters = tmpArray
-                console.log(this.node.parameters)
+                // console.log(this.node.parameters)
               } else if (response.data.parameters !== null) {
                 this.node.parameters = [response.data.parameters]
               }
@@ -259,11 +259,10 @@ export default {
       this.searchmethod = ''
     },
     searchGraph() {
-      console.log('search')
-
+      // console.log('search')
       var searchurl = 'http://9.86.69.48:8081/searchgraph?projectid=' + this.id + '&gitversion=&branchname&class=' + this.searchclass + '&function=' + this.searchmethod
       axios.get(searchurl).then(response => {
-        console.log(response)
+        // console.log(response)
         if (response.data.nodes.length == 0) {
           // alert
           this.$alert('搜索方法不存在', '提示', {

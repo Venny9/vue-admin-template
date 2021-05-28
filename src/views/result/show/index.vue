@@ -166,6 +166,8 @@ export default {
       activeName: "1",
       activeNames: ['1'],
       id: '', // 拼接到url中
+      gitversion: '',
+      branchname: '',
       firstInit: true,
       score: -1,
       parturl: '',
@@ -178,11 +180,13 @@ export default {
   },
   created() {
     this.id = this.$route.query.id
-    this.parturl = 'http://9.86.69.48:8081/modifygraph?projectid=' + this.id + '&gitversion=&branchname='
-    this.allurl = 'http://9.86.69.48:8081/callgraph?projectid=' + this.id + '&gitversion=&branchname='
-    this.riskurl = 'http://9.86.69.48:8081/getrisk?projectid=' + this.id + '&gitversion&branchname='
+    this.gitversion = this.$route.query.gitversion
+    this.branchname = this.$route.query.branchname
+    this.parturl = 'http://9.86.69.48:8081/modifygraph?projectid=' + this.id + '&gitversion=' + this.gitversion + '&branchname=' + this.branchname
+    this.allurl = 'http://9.86.69.48:8081/callgraph?projectid=' + this.id + '&gitversion=' + this.gitversion + '&branchname=' + this.branchname
+    this.riskurl = 'http://9.86.69.48:8081/getrisk?projectid=' + this.id + '&gitversion=' + this.gitversion + '&branchname=' + this.branchname
     axios.get(this.riskurl).then(response => {
-      console.log(response.data)
+      // console.log(response.data)
       this.tableData = response.data.data
       this.score = response.data.riskLevel
     }).catch(error => console.log(error))

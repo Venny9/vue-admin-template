@@ -234,6 +234,14 @@ export default {
             })
           }
         })
+        // 修改边的颜色
+        this.graphData.edges.forEach((e) => {
+          if (e.isCover) {
+            e.style = Object.assign(e.style || {}, {
+              stroke: '#198519'
+            })
+          }
+        })
         this.graph.read(this.graphData)
         this.graph.on('node:click', evt => {
           this.node.id = evt.item.getModel().id

@@ -62,33 +62,29 @@
         <template slot-scope="scope">
           <el-button
             type="primary"
-            icon="el-icon-caret-right"
-            circle
+            plain
             size="mini"
             @click="startTest(scope.row)"
-          ></el-button>
+            >执行</el-button
+          >
         </template>
       </el-table-column>
-      <el-table-column prop="test.details" label="测试详情" width="80">
+      <el-table-column prop="test.details" label="动态测试" width="80">
         <template slot-scope="scope"
-          ><el-button
-            type="info"
-            icon="el-icon-s-order"
-            circle
-            size="mini"
-            @click="showTest(scope.row)"
-          ></el-button>
+          ><el-button type="info" plain size="mini" @click="showTest(scope.row)"
+            >详情</el-button
+          >
         </template>
       </el-table-column>
       <el-table-column prop="result" label="评估结果" width="80">
         <template slot-scope="scope">
           <el-button
-            type="success"
-            icon="el-icon-tickets"
-            circle
+            :type="result_type(scope.row)"
             size="mini"
             @click="showresult(scope.row)"
-          ></el-button>
+            plain
+            >{{ result_value(scope.row) }}</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -118,32 +114,56 @@ export default {
       pagesize: 10,
       list: {
         data: [
-          { id: '45180', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-9 10:44', test: { begin: '45180', details: '45180' }, result: '45180' },
+          { id: '45180', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-9 10:44', test: { begin: '45180', details: '45180' }, result: '67' },
           // { id: '', module: '', branch: '', revison: '', date: '', test: { begin: '', details: '' }, result: '' },
-          { id: '38593', module: 'tracking-service', branch: 'feature/20210520-android_channel', revision: 'a943aa3c6da7370b2bd4561e51c277f45f568163', date: '2021-6-9 10:42', test: { begin: '38593', details: '38593' }, result: '38593' },
-          { id: '00005', module: 'action-service', branch: 'feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00004', module: 'action-service', branch: 'feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00003', module: 'action-service', branch: 'feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00002', module: 'action-service', branch: 'feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00005', module: 'action-service', branch: 'feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00004', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00003', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00002', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00005', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00004', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00003', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00002', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00005', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00004', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00003', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00002', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45180' },
-          { id: '00001', module: 'tracking-service', branch: 'feature/20210520-android_channel', revision: 'a943aa3c6da7370b2bd4561e51c277f45f568163', date: '2021-6-1 10:44', test: { begin: '38593', details: '38593' }, result: '38593' }
+          { id: '38593', module: 'tracking-service', branch: 'feature/20210520-android_channel', revision: 'a943aa3c6da7370b2bd4561e51c277f45f568163', date: '2021-6-9 10:42', test: { begin: '38593', details: '38593' }, result: '34' },
+          { id: '00005', module: 'action-service', branch: 'feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '30' },
+          { id: '00004', module: 'action-service', branch: 'feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '12' },
+          { id: '00003', module: 'action-service', branch: 'feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '34' },
+          { id: '00002', module: 'action-service', branch: 'feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '56' },
+          { id: '00005', module: 'action-service', branch: 'feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '78' },
+          { id: '00004', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '94' },
+          { id: '00003', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '36' },
+          { id: '00002', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '65' },
+          { id: '00005', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '2' },
+          { id: '00004', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '45' },
+          { id: '00003', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '78' },
+          { id: '00002', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '89' },
+          { id: '00005', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '73' },
+          { id: '00004', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '43' },
+          { id: '00003', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '32' },
+          { id: '00002', module: 'action-service', branch: 'release/java.gdt.action_meta_service/feature/leflow_auto_create/202102021115', revision: '2d2efc060c1d69d179b20ae9b83b600c22b525f6', date: '2021-6-3 10:42', test: { begin: '45180', details: '45180' }, result: '89' },
+          { id: '00001', module: 'tracking-service', branch: 'feature/20210520-android_channel', revision: 'a943aa3c6da7370b2bd4561e51c277f45f568163', date: '2021-6-1 10:44', test: { begin: '38593', details: '38593' }, result: '高' }
         ]
       }
     }
   },
   mounted() {
     this.total = this.list.data.length
+  },
+  computed: {
+    result_type() {
+      return function (row) {
+        if (row.result >= 70) {
+          return "danger"
+        } else if (row.result >= 35) {
+          return "warning"
+        } else {
+          return "success"
+        }
+      }
+    },
+    result_value() {
+      return function (row) {
+        if (row.result >= 70) {
+          return "高风险"
+        } else if (row.result >= 35) {
+          return "中风险"
+        } else {
+          return "低风险"
+        }
+      }
+    }
   },
   methods: {
     showresult(row) {
